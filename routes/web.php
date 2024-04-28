@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WEB\AuthController;
 use App\Http\Controllers\WEB\UserController;
+use App\Http\Controllers\WEB\SchoolController;
 use App\Http\Controllers\WEB\HomepageController;
 use App\Http\Controllers\WEB\ExperienceController;
 
@@ -34,12 +35,13 @@ Route::post('/connexion', [AuthController::class, 'login']);
     });
 
     Route::group(['prefix' => 'career'], function() {
-        Route::get('/', [ExperienceController::class, 'index'])->name('career');
-        Route::post('/', [ExperienceController::class, 'update'])->name('career.update');
+        Route::get('/', [ExperienceController::class, 'career'])->name('career');
+        Route::get('/store', [ExperienceController::class, 'storeCareer'])->name('career.store');
+        Route::post('/', [ExperienceController::class, 'updateCareer'])->name('career.update');
     });
 
     Route::group(['prefix' => 'experience'], function() {
-        Route::get('/', [ExperienceController::class, 'index'])->name('experience');
+        Route::get('/', [ExperienceController::class, 'experience'])->name('experience');
     });
 
     Route::group(['prefix' => 'contact'], function() {

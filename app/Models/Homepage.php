@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class School extends Model
+class Homepage extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function localization() : string
+    public function image() : BelongsTo
     {
-        return $this->street . ' ,' . $this->city . ' ' . $this->zip_code;
+        return $this->belongsTo(Image::class);
     }
 }

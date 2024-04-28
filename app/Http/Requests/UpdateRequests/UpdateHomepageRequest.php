@@ -22,11 +22,11 @@ class UpdateHomepageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image'     => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image'     => 'required|string',
             'messages'  => 'required|string',
-            'github'    => 'required|string',
-            'gitlab'    => 'required|string',
-            'linkedin'  => 'required|string',
+            'github'    => 'nullable|string',
+            'gitlab'    => 'nullable|string',
+            'linkedin'  => 'nullable|string',
         ];
     }
 }
