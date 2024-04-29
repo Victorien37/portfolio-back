@@ -4,9 +4,8 @@
 
 @section('content')
 
-    <h1>Créer un parcours</h1>
-
-    <form action="#" method="post">
+    <form action="{{ route('career.create') }}" method="POST">
+        @csrf
         <div class="row">
             <div class="col-6">
                 <div class="card">
@@ -38,11 +37,11 @@
                                 <h5 class="card-title">Titre</h5>
                             </div>
                             <div class="card-body">
-                                <label for="qualification">Qualification</label>
-                                <input onchange="getShort('qualification')" type="text" name="qualification" id="qualification" class="form-control" />
+                                <label for="qualification">Qualification <span class="text-danger">*</span></label>
+                                <input onchange="getShort('qualification')" type="text" name="qualification" id="qualification" class="form-control" required />
 
-                                <label for="qualification_short">Qualification racourcis</label>
-                                <input type="text" name="qualification_short" id="qualification_short" class="form-control" />
+                                <label for="qualification_short">Qualification racourcis <span class="text-danger">*</span></label>
+                                <input type="text" name="qualification_short" id="qualification_short" class="form-control" required />
 
                                 <label for="option">Option</label>
                                 <input onchange="getShort('option')" type="text" name="option" id="option" class="form-control" />
@@ -59,9 +58,13 @@
                                 <h5 class="card-title">Autre</h5>
                             </div>
                             <div class="card-body">
-                                <div id="image"></div>
+                                <div id="image-selected"></div>
                                 <label for="image"></label>
-                                <input type="file" name="image" id="image" class="form-control" accept="image/png, image/jpeg, image/jpg" />
+                                <input onchange="displayImage()" type="file" id="image" class="form-control" accept="image/png, image/jpeg, image/jpg" />
+                                <input type="hidden" name="image" id="image_base64">
+
+                                <label for="name" class="form-label">Nom <span class="text-danger">*</span></label>
+                                <input type="text" name="name" id="name" class="form-control" required />
 
                                 <label for="url">Url</label>
                                 <input type="url" name="url" id="url" class="form-control" placeholder="https://" pattern="https://.*" />
@@ -77,14 +80,14 @@
                         <h5 class="card-title">Experience</h5>
                     </div>
                     <div class="card-body">
-                        <label for="start_date">Date de commencement</label>
-                        <input type="date" name="start_date" id="start_date" class="form-control" />
+                        <label for="start_date">Date de commencement <span class="text-danger">*</span></label>
+                        <input type="date" name="start_date" id="start_date" class="form-control" required />
 
-                        <label for="end_date">Date de fin</label>
-                        <input type="date" name="end_date" id="end_date" class="form-control" />
+                        <label for="end_date">Date de fin <span class="text-danger">*</span></label>
+                        <input type="date" name="end_date" id="end_date" class="form-control" required />
 
-                        <label for="job_title">Nom du poste</label>
-                        <input type="text" name="job_title" id="job_title" class="form-control" />
+                        <label for="job_title">Nom du poste <span class="text-danger">*</span></label>
+                        <input type="text" name="job_title" id="job_title" class="form-control" required />
 
                         <label for="development">Lié au développement</label>
                         <input type="checkbox" name="development" id="development" class="form-check-input" />
@@ -100,14 +103,20 @@
                                 <option value="{{ $company->id }}">{{ $company->name }}</option>
                             @endforeach
                         </select>
+                        <br>
+                        {{-- modal button --}}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#companyModal" disabled id="btn-modal">Ajouter une entreprise</button>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                        <button type="submit" class="btn btn-primary">Créer</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
+
+    <!-- Modal -->
+    @include('components.company-modal')
 
 @endsection
 @push('footer_js')
@@ -131,13 +140,16 @@
         }
 
         const alernance = () => {
-            const contract = document.getElementById('contract');
-            const company = document.getElementById('company');
+            const contract  = document.getElementById('contract');
+            const company   = document.getElementById('company');
+            const btnModal  = document.getElementById('btn-modal');
 
             if (contract.checked) {
-                company.disabled = false;
+                company.disabled    = false;
+                btnModal.disabled   = false;
             } else {
-                company.disabled = true;
+                company.disabled    = true;
+                btnModal.disabled   = true;
             }
         }
     </script>

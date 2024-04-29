@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class Experience extends Model
 {
@@ -13,9 +15,9 @@ class Experience extends Model
 
     protected $guarded = [];
 
-    public function school() : HasOne
+    public function school() : BelongsTo
     {
-        return $this->hasOne(School::class);
+        return $this->belongsTo(School::class);
     }
 
     public function company() : HasOne
@@ -26,5 +28,15 @@ class Experience extends Model
     public function project() : HasOne
     {
         return $this->hasOne(Project::class);
+    }
+
+    public function getFrenchDates() : string
+    {
+        Carbon::setLocale('fr');
+
+        $start_date = Carbon::createFromFormat('Y-m-d', $this->start_date)->isoFormat('D MMMM YYYY');
+        $end_date   = Carbon::createFromFormat('Y-m-d', $this->end_date)->isoFormat('D MMMM YYYY');
+
+        return $start_date . ' - ' . $end_date;
     }
 }

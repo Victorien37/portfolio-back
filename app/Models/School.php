@@ -11,8 +11,14 @@ class School extends Model
 
     protected $guarded = [];
 
-    public function localization() : string
+    public function localization() : ?string
     {
-        return $this->street . ' ,' . $this->city . ' ' . $this->zip_code;
+        $return = null;
+
+        if ($this->street && $this->city && $this->zip_code) {
+            $return = $this->street . ' ,' . $this->city . ' ' . $this->zip_code;
+        }
+
+        return $return;
     }
 }

@@ -5,6 +5,7 @@
 @section('content')
 
     <form action="{{ route('homepage.update') }}" method="POST">
+        @method('PUT')
         @csrf
         <div class="row">
             <div class="col-6">
