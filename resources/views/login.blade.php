@@ -10,25 +10,31 @@
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                    <form>
-
+                    <form method="POST" action="@if($userExist) {{ route('login') }} @else {{ route('create') }} @endif">
+                        @csrf
                         <div class="divider d-flex align-items-center my-4"></div>
 
                         <!-- Email input -->
                         <div data-mdb-input-init class="form-outline mb-4">
                             <label class="form-label" for="email">Adresse email</label>
-                            <input type="email" id="email" class="form-control form-control-lg" />
+                            <input type="email" name="email" id="email" class="form-control form-control-lg" />
                         </div>
 
                         <!-- Password input -->
                         <div data-mdb-input-init class="form-outline mb-3">
                             <label class="form-label" for="password">Mot de passe</label>
-                            <input type="password" id="password" class="form-control form-control-lg" />
+                            <input type="password" name="password" id="password" class="form-control form-control-lg" />
                         </div>
 
+                        @if (!$userExist)
+                            <div data-mdb-input-init class="form-outline mb-3">
+                                <label class="form-label" for="confirm-password">Confimer le mot de passe</label>
+                                <input type="password" name="confirm-password" id="confirm-password" class="form-control form-control-lg" />
+                            </div>
+                        @endif
+
                         <div class="text-center text-lg-start mt-4 pt-2">
-                            <a href="{{ route('homepage') }}" class="btn btn-primary btn-lg">Connexion</a>
-                            <!-- <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Connexion</button> -->
+                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">@if($userExist) Connexion @else Créer @endif</button>
                         </div>
 
                     </form>

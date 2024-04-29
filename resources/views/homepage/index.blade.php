@@ -4,8 +4,6 @@
 
 @section('content')
 
-    <h1>Page d'accueil</h1>
-
     <form action="{{ route('homepage.update') }}" method="POST">
         @csrf
         <div class="row">
@@ -66,7 +64,7 @@
                     <div class="card-body">
                         <div id="image-selected">
                             @if ($homepage->image)
-                                <img src="{{ $homepage->image->url }}" alt="{{ $homepage->alt }}" />
+                                <img src="{{ $homepage->image->url }}" alt="{{ $homepage->image->alt }}" />
                             @endif
                         </div>
                         <div class="mb-3">
@@ -82,22 +80,3 @@
     </form>
 
 @endsection
-@push('footer_js')
-    <script>
-        const displayImage = () => {
-            const image = document.getElementById('image');
-            const imageSelected = document.getElementById('image-selected');
-            imageSelected.innerHTML = '';
-            if (image.files.length > 0) {
-                const reader = new FileReader();
-                reader.onloadend = (e) => {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    document.getElementById('image_base64').value = e.target.result.split(',')[1];
-                    imageSelected.appendChild(img);
-                };
-                reader.readAsDataURL(image.files[0]);
-            }
-        };
-    </script>
-@endpush

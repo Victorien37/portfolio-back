@@ -12,16 +12,23 @@
         <title>@yield('title') - Portfolio</title>
     </head>
     <body>
-        {{-- @auth --}}
+        @auth
             <header>
                 @include('components.navbar')
             </header>
-        {{-- @endauth --}}
-        <main role="main">
-            <div class="container">
+            <main role="main">
+                <div class="container">
+                    <h1>@yield('title')</h1>
+                    @include('components.flash-message')
+                    @yield('content')
+                </div>
+            </main>
+        @endauth
+        @guest
+            <main role="main">
                 @yield('content')
-            </div>
-        </main>
+            </main>
+        @endguest
         {{-- Bootstrap --}}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
@@ -30,6 +37,26 @@
 
         {{-- Axios --}}
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+        {{-- Custom JS --}}
+        <script>
+            const displayImage = () => {
+                const image = document.getElementById('image');
+                const imageSelected = document.getElementById('image-selected');
+                imageSelected.innerHTML = '';
+                if (image.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onloadend = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-fluid');
+                        document.getElementById('image_base64').value = e.target.result.split(',')[1];
+                        imageSelected.appendChild(img);
+                    };
+                    reader.readAsDataURL(image.files[0]);
+                }
+            };
+        </script>
 
         {{-- Footer JS --}}
         @stack('footer_js')

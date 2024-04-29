@@ -19,10 +19,11 @@ use App\Http\Controllers\WEB\ExperienceController;
 */
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
-Route::post('/connexion', [AuthController::class, 'login']);
+Route::post('/create', [AuthController::class, 'create'])->name('create');
+Route::post('/connexion', [AuthController::class, 'login'])->name('login');
 
-//Route::group(['middleware' => 'auth'], function () {
-    Route::get('/deconnexion', [UserController::class, 'logout'])->name('logout');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/deconnexion', [AuthController::class, 'logout'])->name('logout');
 
     Route::group(['prefix' => 'homepage'], function() {
         Route::get('/', [HomepageController::class, 'index'])->name('homepage');
@@ -30,8 +31,8 @@ Route::post('/connexion', [AuthController::class, 'login']);
     });
 
     Route::group(['prefix' => 'about'], function() {
-        Route::get('/', [UserController::class, 'about'])->name('about');
-        Route::post('/', [UserController::class, 'updateAbout'])->name('about.update');
+        Route::get('/', [UserController::class, 'index'])->name('about');
+        Route::post('/', [UserController::class, 'update'])->name('about.update');
     });
 
     Route::group(['prefix' => 'career'], function() {
@@ -47,4 +48,4 @@ Route::post('/connexion', [AuthController::class, 'login']);
     Route::group(['prefix' => 'contact'], function() {
         Route::get('/', [ExperienceController::class, 'index'])->name('contact');
     });
-//});
+});
