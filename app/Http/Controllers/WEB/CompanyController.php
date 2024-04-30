@@ -10,10 +10,42 @@ use App\Models\Company;
 use App\Models\Image;
 use App\Helpers\Serializer;
 use App\Http\Resources\CompanyResource;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+
 
 class CompanyController extends Controller
 {
-    public function create(StoreCompanyRequest $request) : JsonResponse
+    public function index() : View
+    {
+        $companies = Company::all();
+
+        return view('company.index', compact('companies'));
+    }
+
+    public function store() : View
+    {
+        return view('company.store');
+    }
+
+    public function create(StoreCompanyRequest $request) : RedirectResponse
+    {
+        //
+    }
+
+    public function edit(Company $company) : View
+    {
+        return view('company.edit', compact('company'));
+    }
+
+    public function update(UpdateCompanyRequest $request, Company $company) : RedirectResponse
+    {
+        //
+    }
+
+
+
+    public function createWithAxios(StoreCompanyRequest $request) : JsonResponse
     {
         $return = Serializer::error("Cette entreprise existe déjà", [], JsonResponse::HTTP_CONFLICT);
         $companyExist = Company::where('name', $request->name)->first();

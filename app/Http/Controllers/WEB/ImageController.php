@@ -30,4 +30,10 @@ class ImageController extends Controller
 
         return $return;
     }
+
+    public function delete(Image $image) : void
+    {
+        Storage::disk('public')->delete($image->url);
+        $image->delete();
+    }
 }

@@ -15,11 +15,13 @@
         @auth
             <header>
                 @include('components.navbar')
+                <br>
             </header>
             <main role="main">
                 <div class="container">
                     <h1>@yield('title')</h1>
                     @include('components.flash-message')
+                    <br>
                     @yield('content')
                 </div>
             </main>

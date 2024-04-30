@@ -73,7 +73,6 @@
 
         const deleteCareer = (button) => {
             const id = button.parentElement.parentElement.id;
-            console.log(id);
             axios.delete(`/career/${id}`)
             .then(response => {
                 // close modal
