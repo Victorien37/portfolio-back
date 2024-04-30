@@ -4,13 +4,11 @@
 
 @section('content')
 
-    <h1>Expériences</h1>
-
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="#" class="btn btn-success">Ajouter</a>
+                    <a href="{{ route('experience.store') }}" class="btn btn-success">Ajouter</a>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
@@ -25,16 +23,16 @@
                         </thead>
                         <tbody>
                             @foreach ($experiences as $experience)
-                                <tr>
+                                <tr id="{{ $experience->id }}">
                                     <td>
-                                        <a href="#">{{ $experience->company->name }}</a>
+                                        <a href="{{ route('company.edit') }}">{{ $experience->company->name }}</a>
                                     </td>
                                     <td>{{ $experience->company->localization() }}</td>
                                     <td>{{ $experience->position }}</td>
                                     <td>{{ $experience->start_date }} - {{ $experience->end_date }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-primary">Modifier</a>
-                                        <a href="#" class="btn btn-danger">Supprimer</a>
+                                        <a href="{{ route('experience.edit') }}" class="btn btn-primary">Modifier</a>
+
                                     </td>
                                 </tr>
                             @endforeach

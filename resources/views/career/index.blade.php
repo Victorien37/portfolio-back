@@ -31,7 +31,7 @@
                                     <td>{{ $experience->school?->option }}</td>
                                     <td>{{ $experience->getFrenchDates() }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-primary">Modifier</a>
+                                        <a href="{{ route('career.edit', $experience) }}" class="btn btn-primary">Modifier</a>
                                         <button type="button" class="btn btn-danger" onclick="openModal(this)">Supprimer</button>
                                     </td>
                                 </tr>
@@ -44,11 +44,11 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteExperienceModal" tabindex="-1" aria-labelledby="deleteExperienceModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <h5 class="modal-title" id="deleteExperienceModalLabel"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -63,10 +63,10 @@
 @push('footer_js')
     <script>
         const openModal = (button) => {
-            const modal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+            const modal = new bootstrap.Modal(document.getElementById('deleteExperienceModal'), {
                 keyboard: false
             });
-            document.getElementById('exampleModalLabel').textContent = `Supprimer l'expérience de ${button.parentElement.parentElement.children[0].textContent} ?`;
+            document.getElementById('deleteExperienceModalLabel').textContent = `Supprimer l'expérience de ${button.parentElement.parentElement.children[0].textContent} ?`;
             document.getElementById('confirmDeleteCareer').onclick = () => deleteCareer(button);
             modal.show();
         }
@@ -77,7 +77,7 @@
             axios.delete(`/career/${id}`)
             .then(response => {
                 // close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteExperienceModal'));
                 modal.hide();
                 document.getElementById(id).remove();
             });
