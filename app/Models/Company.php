@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Company extends Model
 {
@@ -19,8 +20,8 @@ class Company extends Model
         return $this->hasMany(Experience::class);
     }
 
-    public function image() : HasOne
+    public function image() : BelongsTo
     {
-        return $this->hasOne(Image::class);
+        return $this->belongsTo(Image::class);
     }
 }

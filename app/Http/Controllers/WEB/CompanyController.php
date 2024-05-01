@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\StoreRequests\StoreCompanyRequest;
+use App\Http\Requests\UpdateRequests\UpdateCompanyRequest;
 use App\Models\Company;
 use App\Models\Image;
 use App\Helpers\Serializer;
@@ -30,7 +31,28 @@ class CompanyController extends Controller
 
     public function create(StoreCompanyRequest $request) : RedirectResponse
     {
-        //
+        $status     = "error";
+        $message    = "An error has occurred while creating the company";
+
+        $image      = app("App\Http\Controllers\WEB\ImageController")->create($request->image);
+
+        if ($image) {
+            Company::create([
+                'name'          => $request->name,
+                'description'   => $request->description,
+                'city'          => $request->city,
+                'street'        => $request->street,
+                'zipcode'       => $request->zipcode,
+                'country'       => $request->country,
+                'url'           => $request->url,
+                'image_id'      => $image,
+            ]);
+
+            $message    = "The company has been created";
+            $status     = "success";
+        }
+
+        return redirect()->route('company.index')->with($status, $message);
     }
 
     public function edit(Company $company) : View
@@ -40,10 +62,49 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request, Company $company) : RedirectResponse
     {
-        //
+        $status     = "error";
+        $message    = "An error has occurred while updating the company";
+
+        $imageExist = Image::where('id', $request->image)->first();
+
+        if ($imageExist) {
+            $image = $imageExist->id;
+        } else {
+            $image = app("App\Http\Controllers\WEB\ImageController")->create($request->image);
+
+            $company->update([ 'image_id' => null ]);
+
+            $company->image()->delete();
+        }
+
+        if ($image) {
+            $company->update([
+                'name'          => $request->name,
+                'description'   => $request->description,
+                'city'          => $request->city,
+                'street'        => $request->street,
+                'zipcode'       => $request->zipcode,
+                'country'       => $request->country,
+                'url'           => $request->url,
+                'image_id'      => $image,
+            ]);
+
+            $message    = "The company has been updated";
+            $status     = "success";
+        }
+
+        return redirect()->route('company.index')->with($status, $message);
     }
 
+    public function delete(Company $company) : JsonResponse
+    {
+        $image = Image::where('id', $company->image_id)->first();
 
+        $company->delete();
+        $image->delete();
+
+        return response()->json("Company has been deleted");
+    }
 
     public function createWithAxios(StoreCompanyRequest $request) : JsonResponse
     {
@@ -71,7 +132,7 @@ class CompanyController extends Controller
                 'image_id'      => $image ?? null,
             ]);
 
-            $return = Serializer::success(new CompanyResource($company), "L'entrepise a bien été ajouté", JsonResponse::HTTP_CREATED);
+            $return = Serializer::success(new CompanyResource($company), "Company was created succesfully", JsonResponse::HTTP_CREATED);
         }
 
         return $return;

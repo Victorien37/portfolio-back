@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [CompanyController::class, 'index'])->name('company.index');
         Route::get('/store', [CompanyController::class, 'store'])->name('company.store');
         Route::post('/store', [CompanyController::class, 'create'])->name('company.create');
+        Route::post('/axios', [CompanyController::class, 'createWithAxios'])->name('company.axios.create');
         Route::get('/{company}', [CompanyController::class, 'edit'])->name('company.edit');
         Route::put('/{company}', [CompanyController::class, 'update'])->name('company.update');
         Route::delete('/{company}', [CompanyController::class, 'delete'])->name('company.delete');

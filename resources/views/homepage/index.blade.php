@@ -1,6 +1,6 @@
 @extends('components.layout')
 
-@section('title', "Page d'accueil")
+@section('title', "Homepage")
 
 @section('content')
 
@@ -11,7 +11,7 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Réseaux sociaux</h5>
+                        <h5 class="card-title">Socials Medias</h5>
                     </div>
                     <div class="card-body">
                         <div class="input-group mb-3">
@@ -44,11 +44,11 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Messages dynamique</h5>
+                        <h5 class="card-title">Dynamics messages</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="messages" class="form-label">Messages séparés par un point virgule</label>
+                            <label for="messages" class="form-label">Messages separated by a semicolon</label>
                             <textarea class="form-control" name="messages" id="messages" rows="4">{{ $homepage->messages }}</textarea>
                         </div>
                     </div>
@@ -60,12 +60,12 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Image de fond</h5>
+                        <h5 class="card-title">Background Image</h5>
                     </div>
                     <div class="card-body">
                         <div id="image-selected">
                             @if ($homepage->image)
-                                <img src="{{ $homepage->image->url }}" alt="{{ $homepage->image->alt }}" />
+                                <img src="{{ url('storage' . $homepage->image->url) }}" alt="{{ $homepage->image->alt }}" class="img-fluid" />
                             @endif
                         </div>
                         <div class="mb-3">
@@ -77,7 +77,7 @@
             </div>
         </div>
         <br>
-        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <button class="btn btn-primary" type="submit">Save</button>
     </form>
 
 @endsection

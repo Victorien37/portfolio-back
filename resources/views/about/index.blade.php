@@ -1,6 +1,6 @@
 @extends('components.layout')
 
-@section('title', 'À propos')
+@section('title', 'About')
 
 @section('content')
 
@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <div id="image-selected">
                             @if (auth()->user()->image)
-                                <img src="{{ auth()->user()->image->url }}" alt="{{ auth()->user()->image->alt }}" />
+                                <img src="{{ url('storage' . auth()->user()->image->url) }}" alt="{{ auth()->user()->image->alt }}" class="img-fluid" />
                             @endif
                         </div>
                         <div class="input-group mb-3">
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
 
 @endsection
