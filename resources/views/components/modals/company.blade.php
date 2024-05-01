@@ -2,23 +2,23 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="companyModalLabel">Ajouter une entreprise</h5>
+                <h5 class="modal-title" id="companyModalLabel">Add a company</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label for="company-name" class="form-label">Nom</label>
+                <label for="company-name" class="form-label">Name</label>
                 <input type="text" id="company-name" class="form-control" />
 
                 <label for="company-description" class="form-label">Description</label>
                 <textarea id="company-description" cols="15" rows="5" class="form-control"></textarea>
 
-                <label for="company-city" class="form-label">Ville</label>
+                <label for="company-city" class="form-label">City</label>
                 <input type="text" id="company-city" class="form-control" />
 
-                <label for="company-street" class="form-label">Adresse</label>
+                <label for="company-street" class="form-label">Street</label>
                 <input type="text" id="company-street" class="form-control" />
 
-                <label for="company-zipcode" class="form-label">Code postal</label>
+                <label for="company-zipcode" class="form-label">Zipcode</label>
                 <input type="number" id="company-zipcode" min="0" max="99999" class="form-control" />
 
                 <label for="company-url" class="form-label">Url</label>
@@ -30,8 +30,8 @@
                 <input type="hidden" id="company-image" value="" />
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-primary" onclick="addCompany()">Ajouter</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="addCompany()">Add</button>
             </div>
         </div>
     </div>

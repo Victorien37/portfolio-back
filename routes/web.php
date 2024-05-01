@@ -7,6 +7,7 @@ use App\Http\Controllers\WEB\SchoolController;
 use App\Http\Controllers\WEB\HomepageController;
 use App\Http\Controllers\WEB\ExperienceController;
 use App\Http\Controllers\WEB\CompanyController;
+use App\Http\Controllers\WEB\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [SchoolController::class, 'index'])->name('school.index');
         Route::get('/store', [SchoolController::class, 'store'])->name('school.store');
         Route::post('/store', [SchoolController::class, 'create'])->name('school.create');
+        Route::post('/axios', [SchoolController::class, 'createWithAxios'])->name('school.axios.create');
         Route::get('/{school}', [SchoolController::class, 'edit'])->name('school.edit');
         Route::put('/{school}', [SchoolController::class, 'update'])->name('school.update');
         Route::delete('/{school}', [SchoolController::class, 'delete'])->name('school.delete');
@@ -43,6 +45,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{company}', [CompanyController::class, 'edit'])->name('company.edit');
         Route::put('/{company}', [CompanyController::class, 'update'])->name('company.update');
         Route::delete('/{company}', [CompanyController::class, 'delete'])->name('company.delete');
+        Route::group(['prefix' => 'projects'], function() {
+            Route::get('/{company}', [ProjectController::class, 'index'])->name('project.index');
+            Route::get('/{company}/store', [ProjectController::class, 'store'])->name('project.store');
+            Route::post('/{company}/store', [ProjectController::class, 'create'])->name('project.create');
+            Route::get('/{company}/{project}', [ProjectController::class, 'edit'])->name('project.edit');
+            Route::put('/{company}/{project}', [ProjectController::class, 'update'])->name('project.update');
+            Route::delete('/{company}/{project}', [ProjectController::class, 'delete'])->name('project.delete');
+        });
     });
 
     Route::group(['prefix' => 'homepage'], function() {

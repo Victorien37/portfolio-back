@@ -57,8 +57,9 @@ class ExperienceController extends Controller
 
     public function storeCareer() : View
     {
-        $companies = Company::all();
-        return view('career.store', compact('companies'));
+        $companies  = Company::all();
+        $schools    = School::all();
+        return view('career.store', compact('companies', 'schools'));
     }
 
     public function createCareer(StoreCareerRequest $request) : RedirectResponse
