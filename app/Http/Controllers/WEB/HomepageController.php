@@ -22,7 +22,7 @@ class HomepageController extends Controller
     {
         $homepage = Homepage::first();
         $status     = 'error';
-        $message    = "Erreur lors de la mise à jour de la page d'accueil.";
+        $message    = "An error occurred while updating the homepage.";
 
         if ($homepage) {
             $imageExist = Image::where('id', $request->image)->first();
@@ -44,7 +44,7 @@ class HomepageController extends Controller
                 ]);
 
                 $status = 'success';
-                $message = "La page d'accueil a bien été mise à jour.";
+                $message = "The homepage has been successfully updated.";
             }
         }
 

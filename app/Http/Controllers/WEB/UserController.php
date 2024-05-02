@@ -19,7 +19,7 @@ class UserController extends Controller
     public function update(UpdateAboutRequest $request) : RedirectResponse
     {
         $status     = "error";
-        $message    = "Une erreur s'est produite lors de la mise à jour du profil";
+        $message    = "An error occurred while updating the profile.";
 
         $imageExist = Image::where('id', $request->image)->first();
 
@@ -35,7 +35,7 @@ class UserController extends Controller
         ]);
 
         $status     = "success";
-        $message    = "Profil mis à jour avec succès";
+        $message    = "The profile has been successfully updated.";
 
         return redirect()->route('about')->with($status, $message);
     }
