@@ -22,19 +22,15 @@ class UpdateCareerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'city'                  => 'nullable|string',
-            'street'                => 'nullable|string',
-            'zipcode'               => 'nullable|string',
+            'school'                => 'required|integer',
             'qualification'         => 'required|string',
             'qualification_short'   => 'required|string',
             'option'                => 'nullable|string',
             'option_short'          => 'nullable|string',
-            'image'                 => 'nullable|string',
-            'name'                  => 'required|string',
-            'url'                   => 'nullable|string',
             'start_date'            => 'required|date',
             'end_date'              => 'nullable|date',
             'job_title'             => 'required|string',
+            'linked_job'            => 'nullable|string',
             'contract'              => 'nullable|string',
             'company'               => 'nullable|integer',
         ];

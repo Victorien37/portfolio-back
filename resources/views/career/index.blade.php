@@ -1,6 +1,6 @@
 @extends('components.layout')
 
-@section('title', 'Parcours')
+@section('title', 'Career')
 
 @section('content')
 
@@ -8,14 +8,14 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ route('career.store') }}" class="btn btn-success">Ajouter</a>
+                    <a href="{{ route('career.store') }}" class="btn btn-success">Add</a>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Nom de l'école</th>
-                                <th>Localisation</th>
+                                <th>School name</th>
+                                <th>Location</th>
                                 <th>Qualification</th>
                                 <th>Option</th>
                                 <th>Dates</th>
@@ -26,13 +26,13 @@
                             @foreach ($experiences as $experience)
                                 <tr id="{{ $experience->id }}">
                                     <td>{{ $experience->school->name }}</td>
-                                    <td>{{ $experience->school->localization() }}</td>
+                                    <td>{{ $experience->school->location() }}</td>
                                     <td>{{ $experience->school->qualification }}</td>
                                     <td>{{ $experience->school?->option }}</td>
                                     <td>{{ $experience->getFrenchDates() }}</td>
                                     <td>
-                                        <a href="{{ route('career.edit', $experience) }}" class="btn btn-primary">Modifier</a>
-                                        <button type="button" class="btn btn-danger" onclick="openModal(this)">Supprimer</button>
+                                        <a href="{{ route('career.edit', $experience) }}" class="btn btn-primary">Edit</a>
+                                        <button type="button" class="btn btn-danger" onclick="openModal(this)">Delete</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -52,8 +52,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteCareer">Supprimer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteCareer">Delete</button>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
             const modal = new bootstrap.Modal(document.getElementById('deleteExperienceModal'), {
                 keyboard: false
             });
-            document.getElementById('deleteExperienceModalLabel').textContent = `Supprimer l'expérience de ${button.parentElement.parentElement.children[0].textContent} ?`;
+            document.getElementById('deleteExperienceModalLabel').textContent = `Delete ${button.parentElement.parentElement.children[0].textContent} experience ?`;
             document.getElementById('confirmDeleteCareer').onclick = () => deleteCareer(button);
             modal.show();
         }

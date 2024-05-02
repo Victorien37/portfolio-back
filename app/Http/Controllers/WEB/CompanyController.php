@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\WEB;
 use App\Http\Controllers\Controller;
 
+use App\Models\Image;
+use App\Models\Company;
+use Illuminate\View\View;
+use App\Helpers\Serializer;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\StoreRequests\StoreCompanyRequest;
-use App\Http\Requests\UpdateRequests\UpdateCompanyRequest;
-use App\Models\Company;
-use App\Models\Image;
-use App\Helpers\Serializer;
-use App\Http\Resources\CompanyResource;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use App\Http\Resources\CompanyResource;
+use App\Http\Requests\UpdateRequests\UpdateCompanyRequest;
+use App\Http\Requests\StoreRequests\StoreCompanyRequest;
 
 
 class CompanyController extends Controller
@@ -38,6 +39,7 @@ class CompanyController extends Controller
 
         if ($image) {
             Company::create([
+                'slug'          => Str::slug($request->name),
                 'name'          => $request->name,
                 'description'   => $request->description,
                 'city'          => $request->city,
@@ -55,13 +57,16 @@ class CompanyController extends Controller
         return redirect()->route('company.index')->with($status, $message);
     }
 
-    public function edit(Company $company) : View
+    public function edit(string $slug) : View
     {
+        $company = Company::where('slug', $slug)->first();
         return view('company.edit', compact('company'));
     }
 
-    public function update(UpdateCompanyRequest $request, Company $company) : RedirectResponse
+    public function update(UpdateCompanyRequest $request, string $slug) : RedirectResponse
     {
+        $company    = Company::where('slug', $slug)->first();
+
         $status     = "error";
         $message    = "An error has occurred while updating the company";
 
@@ -79,6 +84,7 @@ class CompanyController extends Controller
 
         if ($image) {
             $company->update([
+                'slug'          => Str::slug($request->name),
                 'name'          => $request->name,
                 'description'   => $request->description,
                 'city'          => $request->city,
@@ -96,8 +102,9 @@ class CompanyController extends Controller
         return redirect()->route('company.index')->with($status, $message);
     }
 
-    public function delete(Company $company) : JsonResponse
+    public function delete(string $slug) : JsonResponse
     {
+        $company = Company::where('slug', $slug)->first();
         $image = Image::where('id', $company->image_id)->first();
 
         $company->delete();
@@ -106,30 +113,28 @@ class CompanyController extends Controller
         return response()->json("Company has been deleted");
     }
 
-    public function createWithAxios(StoreCompanyRequest $request) : JsonResponse
+    public function createAsync(StoreCompanyRequest $request) : JsonResponse
     {
-        $return = Serializer::error("Cette entreprise existe déjà", [], JsonResponse::HTTP_CONFLICT);
-        $companyExist = Company::where('name', $request->name)->first();
+        $return         = Serializer::error("This company allready exist", [], JsonResponse::HTTP_CONFLICT);
+        $companyExist   = Company::where('name', $request->name)->first();
 
         if (!$companyExist) {
             if ($request->image) {
-                $imageExist = Image::where('id', $request->image)->first();
-
-                if (!$imageExist) {
-                    $image = app("App\Http\Controllers\WEB\ImageController")->create($request->image);
-                } else {
-                    $image = $imageExist->id;
-                }
+                $image = app("App\Http\Controllers\WEB\ImageController")->create($request->image);
+            } else {
+                $image = null;
             }
 
             $company = Company::create([
+                'slug'          => Str::slug($request->name),
                 'name'          => $request->name,
                 'description'   => $request->description,
                 'city'          => $request->city,
                 'street'        => $request->street,
                 'zipcode'       => $request->zipcode,
+                'country'       => $request->country,
                 'url'           => $request->url,
-                'image_id'      => $image ?? null,
+                'image_id'      => $image,
             ]);
 
             $return = Serializer::success(new CompanyResource($company), "Company was created succesfully", JsonResponse::HTTP_CREATED);

@@ -8,6 +8,7 @@ use App\Http\Controllers\WEB\HomepageController;
 use App\Http\Controllers\WEB\ExperienceController;
 use App\Http\Controllers\WEB\CompanyController;
 use App\Http\Controllers\WEB\ProjectController;
+use App\Http\Controllers\WEB\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,27 +32,27 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [SchoolController::class, 'index'])->name('school.index');
         Route::get('/store', [SchoolController::class, 'store'])->name('school.store');
         Route::post('/store', [SchoolController::class, 'create'])->name('school.create');
-        Route::post('/axios', [SchoolController::class, 'createWithAxios'])->name('school.axios.create');
-        Route::get('/{school}', [SchoolController::class, 'edit'])->name('school.edit');
-        Route::put('/{school}', [SchoolController::class, 'update'])->name('school.update');
-        Route::delete('/{school}', [SchoolController::class, 'delete'])->name('school.delete');
+        Route::post('/async', [SchoolController::class, 'createAsync'])->name('school.axios.create');
+        Route::get('/{slug}', [SchoolController::class, 'edit'])->name('school.edit');
+        Route::put('/{slug}', [SchoolController::class, 'update'])->name('school.update');
+        Route::delete('/{slug}', [SchoolController::class, 'delete'])->name('school.delete');
     });
 
     Route::group(['prefix' => 'companies'], function() {
         Route::get('/', [CompanyController::class, 'index'])->name('company.index');
         Route::get('/store', [CompanyController::class, 'store'])->name('company.store');
         Route::post('/store', [CompanyController::class, 'create'])->name('company.create');
-        Route::post('/axios', [CompanyController::class, 'createWithAxios'])->name('company.axios.create');
-        Route::get('/{company}', [CompanyController::class, 'edit'])->name('company.edit');
-        Route::put('/{company}', [CompanyController::class, 'update'])->name('company.update');
-        Route::delete('/{company}', [CompanyController::class, 'delete'])->name('company.delete');
+        Route::post('/async', [CompanyController::class, 'createAsync'])->name('company.axios.create');
+        Route::get('/{slug}', [CompanyController::class, 'edit'])->name('company.edit');
+        Route::put('/{slug}', [CompanyController::class, 'update'])->name('company.update');
+        Route::delete('/{slug}', [CompanyController::class, 'delete'])->name('company.delete');
         Route::group(['prefix' => 'projects'], function() {
-            Route::get('/{company}', [ProjectController::class, 'index'])->name('project.index');
-            Route::get('/{company}/store', [ProjectController::class, 'store'])->name('project.store');
-            Route::post('/{company}/store', [ProjectController::class, 'create'])->name('project.create');
-            Route::get('/{company}/{project}', [ProjectController::class, 'edit'])->name('project.edit');
-            Route::put('/{company}/{project}', [ProjectController::class, 'update'])->name('project.update');
-            Route::delete('/{company}/{project}', [ProjectController::class, 'delete'])->name('project.delete');
+            Route::get('/{companySlug}', [ProjectController::class, 'index'])->name('project.index');
+            Route::get('/{companySlug}/store', [ProjectController::class, 'store'])->name('project.store');
+            Route::post('/{companySlug}/store', [ProjectController::class, 'create'])->name('project.create');
+            Route::get('/{companySlug}/{projectSlug}', [ProjectController::class, 'edit'])->name('project.edit');
+            Route::put('/{companySlug}/{projectSlug}', [ProjectController::class, 'update'])->name('project.update');
+            Route::delete('/{companySlug}/{projectSlug}', [ProjectController::class, 'delete'])->name('project.delete');
         });
     });
 
@@ -84,9 +85,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'contacts'], function() {
-        Route::get('/', [ExperienceController::class, 'index'])->name('contact');
-        Route::delete('/{id}', [ExperienceController::class, 'delete'])->name('contact.delete');
+        Route::get('/', [ContactController::class, 'index'])->name('contact');
+        Route::delete('/{contact}', [ContactController::class, 'delete'])->name('contact.delete');
     });
-
-    Route::post('/company', [CompanyController::class, 'create'])->name('company.create');
 });

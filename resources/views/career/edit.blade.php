@@ -1,6 +1,6 @@
 @extends('components.layout')
 
-@section('title', 'Modifier un parcours')
+@section('title', 'Update a career')
 
 @section('content')
 
@@ -11,71 +11,32 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Ecole</h5>
+                        <h5 class="card-title">School</h5>
                     </div>
                     <div class="card-body">
+                        <label for="school" class="form-label">School <span class="text-danger">*</span></label>
+                        <select name="school" id="school" class="form-select">
+                            <option value="" @selected($experience->school_id === null) disabled>Select a school</option>
+                            @foreach ($schools as $school)
+                                <option value="{{ $school->id }}" @selected($school->id === $experience->school_id)>{{ $school->name }}</option>
+                            @endforeach
+                        </select>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Localisation</h5>
-                            </div>
-                            <div class="card-body">
-                                <label for="city">Ville</label>
-                                <input type="text" name="city" id="city" class="form-control" value="{{ $experience->school->city }}" />
+                        <label for="qualification" class="form-label">Qualification <span class="text-danger">*</span></label>
+                        <input onchange="getShort('qualification')" type="text" name="qualification" id="qualification" class="form-control" value="{{ $experience->qualification }}" required />
 
-                                <label for="street">Rue</label>
-                                <input type="text" name="street" id="street" class="form-control" value="{{ $experience->school->street }}" />
+                        <label for="qualification_short" class="form-label">Qualification short <span class="text-danger">*</span></label>
+                        <input type="text" name="qualification_short" id="qualification_short" class="form-control" value="{{ $experience->qualification_short }}" required />
 
-                                <label for="zipcode">Code postal</label>
-                                <input type="number" name="zipcode" id="zipcode" class="form-control" min="0" max="99999" value="{{ $experience->school->zipcode }}" />
-                            </div>
-                        </div>
+                        <label for="option" class="form-label">Option</label>
+                        <input onchange="getShort('option')" type="text" name="option" id="option" class="form-control" value="{{ $experience->option }}" />
 
-                        <br>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Titre</h5>
-                            </div>
-                            <div class="card-body">
-                                <label for="qualification">Qualification <span class="text-danger">*</span></label>
-                                <input onchange="getShort('qualification')" type="text" name="qualification" id="qualification" class="form-control" value="{{ $experience->school->qualification }}" required />
-
-                                <label for="qualification_short">Qualification racourcis <span class="text-danger">*</span></label>
-                                <input type="text" name="qualification_short" id="qualification_short" class="form-control" value="{{ $experience->school->qualification_short }}" required />
-
-                                <label for="option">Option</label>
-                                <input onchange="getShort('option')" type="text" name="option" id="option" class="form-control" value="{{ $experience->school->option }}" />
-
-                                <label for="option_short">Option racourcis</label>
-                                <input type="text" name="option_short" id="option_short" class="form-control" value="{{ $experience->school->option_short }}" />
-                            </div>
-                        </div>
-
-                        <br>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Autre</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="image-selected">
-                                    @if ($experience->school->image)
-                                        <img src="{{ $experience->school->image->url }}" alt="{{ $experience->school->image->alt }}">
-                                    @endif
-                                </div>
-                                <label for="image"></label>
-                                <input onchange="displayImage()" type="file" id="image" class="form-control" accept="image/png, image/jpeg, image/jpg" />
-                                <input type="hidden" name="image" id="image_base64">
-
-                                <label for="name" class="form-label">Nom <span class="text-danger">*</span></label>
-                                <input type="text" name="name" id="name" class="form-control" value="{{ $experience->school->name }}" required />
-
-                                <label for="url">Url</label>
-                                <input type="url" name="url" id="url" class="form-control" placeholder="https://" pattern="https://.*" value="{{ $experience->school->url }}" />
-                            </div>
-                        </div>
-
+                        <label for="option_short" class="form-label">Option short</label>
+                        <input type="text" name="option_short" id="option_short" class="form-control" value="{{ $experience->option_short }}" />
+                    </div>
+                    <div class="card-footer">
+                        {{-- button modal to create school --}}
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#schoolModal" id="btn-modal-school">Add school</button>
                     </div>
                 </div>
             </div>
@@ -85,17 +46,17 @@
                         <h5 class="card-title">Experience</h5>
                     </div>
                     <div class="card-body">
-                        <label for="start_date">Date de commencement <span class="text-danger">*</span></label>
+                        <label for="start_date">Start date <span class="text-danger">*</span></label>
                         <input type="date" name="start_date" id="start_date" class="form-control" value="{{ $experience->start_date }}" required />
 
-                        <label for="end_date">Date de fin <span class="text-danger">*</span></label>
+                        <label for="end_date">End date <span class="text-danger">*</span></label>
                         <input type="date" name="end_date" id="end_date" class="form-control" value="{{ $experience->end_date }}" required />
 
-                        <label for="job_title">Nom du poste <span class="text-danger">*</span></label>
+                        <label for="job_title">Job title <span class="text-danger">*</span></label>
                         <input type="text" name="job_title" id="job_title" class="form-control" value="{{ $experience->job_title }}" required />
 
-                        <label for="development">Lié au développement</label>
-                        <input type="checkbox" name="development" id="development" class="form-check-input" @checked($experience->development) />
+                        <label for="linked_job">Linked to my job</label>
+                        <input type="checkbox" name="linked_job" id="linked_job" class="form-check-input" @checked($experience->linked_job) />
 
                         <br>
                         <label for="contract">Alternance</label>
@@ -108,20 +69,21 @@
                                 <option value="{{ $company->id }}" @selected($experience->company_id === $company->id)>{{ $company->name }}</option>
                             @endforeach
                         </select>
-                        <br>
-                        {{-- modal button --}}
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#companyModal" id="btn-modal" @disabled($experience->contract !== 'Alternance')>Ajouter une entreprise</button>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Modifier</button>
+                        {{-- button modal to create a company --}}
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#companyModal" id="btn-modal" @disabled($experience->contract !== 'Alternance')>Add company</button>
                     </div>
                 </div>
             </div>
         </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Update</button>
     </form>
 
     <!-- Modal -->
-    @include('components.company-modal')
+    @include('components.modals.company')
+    @include('components.modals.school')
 
 @endsection
 @push('footer_js')

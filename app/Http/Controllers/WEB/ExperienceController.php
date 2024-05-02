@@ -8,11 +8,14 @@ use App\Models\School;
 use App\Models\Company;
 use Illuminate\View\View;
 use App\Models\Experience;
+use App\Helpers\Serializer;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreRequests\StoreCareerRequest;
 use App\Http\Requests\UpdateRequests\UpdateCareerRequest;
+use App\Http\Requests\StoreRequests\StoreExperienceRequest;
+use App\Http\Requests\UpdateRequests\UpdateExperienceRequest;
 
 class ExperienceController extends Controller
 {
@@ -29,24 +32,67 @@ class ExperienceController extends Controller
         return view('experience.store', compact('companies', 'contracts'));
     }
 
-    public function createExperience() : RedirectResponse
+    public function createExperience(StoreExperienceRequest $request) : RedirectResponse
     {
-        //
+        try {
+            Experience::create([
+                'start_date'    => $request->start_date,
+                'end_date'      => $request->end_date,
+                'contract'      => $request->contract,
+                'job_title'     => $request->job_title,
+                'linked_job'    => isset($request->linked_job),
+                'company_id'    => $request->company,
+            ]);
+
+            $status = 'success';
+            $message = "The experience has been successfully created.";
+        } catch (Exception $e) {
+            $status     = 'error';
+            $message    = "An error occurred while creating the experience.";
+        }
+
+        return redirect()->route('experience.index')->with($status, $message);
     }
 
-    public function editExperience() : View
+    public function editExperience(Experience $experience) : View
     {
-        //
+        $companies = Company::all();
+        $contracts = ['CDD', 'CDI', 'Stage', 'Freelance'];
+        return view('experience.edit', compact('experience', 'companies', 'contracts'));
     }
 
-    public function updateExperience() : RedirectResponse
+    public function updateExperience(Experience $experience, UpdateExperienceRequest $request) : RedirectResponse
     {
-        //
+        try {
+            $experience->update([
+                'start_date'    => $request->start_date,
+                'end_date'      => $request->end_date,
+                'contract'      => $request->contract,
+                'job_title'     => $request->job_title,
+                'linked_job'    => isset($request->linked_job),
+                'company_id'    => $request->company,
+            ]);
+
+            $status = 'success';
+            $message = "The experience has been successfully updated.";
+        } catch (Exception $e) {
+            $status     = 'error';
+            $message    = "An error occurred while updating the experience.";
+        }
+
+        return redirect()->route('experience.index')->with($status, $message);
     }
 
-    public function deleteExperience() : JsonResponse
+    public function deleteExperience(Experience $experience) : JsonResponse
     {
-        //
+        try {
+            $experience->delete();
+            $message = "The experience has been successfully deleted.";
+        } catch (Exception $e) {
+            $message = "An error occurred while deleting the experience.";
+        }
+
+        return response()->json($message);
     }
 
     public function career() : View
@@ -64,119 +110,90 @@ class ExperienceController extends Controller
 
     public function createCareer(StoreCareerRequest $request) : RedirectResponse
     {
-        $status = 'error';
-        $message = "Une erreur est survenue lors de l'ajout de l'étape du parcours.";
+        try {
+            $school = School::findOrfail($request->school);
 
-        if ($request->image) {
-            $imageExist = Image::where('id', $request->image)->first();
-
-            if (!$imageExist) {
-                $image = app("App\Http\Controllers\WEB\ImageController")->create($request->image);
+            if (isset($request->contract) && isset($request->company)) {
+                $company = Company::findOrfail($request->company)->id;
             } else {
-                $image = $imageExist->id;
+                $company = null;
             }
-        }
 
-        $school = School::create([
-            'name'                  => $request->name,
-            'city'                  => $request->city,
-            'street'                => $request->street,
-            'zipcode'               => $request->zipcode,
-            'description'           => $request->description,
-            'url'                   => $request->url,
-            'image_id'              => $image ?? null,
-            'qualification'         => $request->qualification,
-            'qualification_short'   => $request->qualification_short,
-            'option'                => $request->option,
-            'option_short'          => $request->option_short,
-        ]);
-
-        if ($school) {
-            $experience = Experience::create([
-                'start_date'    => $request->start_date,
-                'end_date'      => $request->end_date,
-                'job_title'     => $request->job_title,
-                'development'   => isset($request->development),
-                'contract'      => (isset($request->contract) && isset($request->company)) ? 'Alternance' : null,
-                'school_id'     => $school->id,
-                'company_id'    => (isset($request->contract) && isset($request->company)) ? $request->company : null,
+            Experience::create([
+                'start_date'            => $request->start_date,
+                'end_date'              => $request->end_date,
+                'contract'              => isset($request->contract) ? 'Alternance' : null,
+                'job_title'             => $request->job_title,
+                'linked_job'            => isset($request->linked_job),
+                'company_id'            => $company,
+                'school_id'             => $school->id,
+                'qualification'         => $request->qualification,
+                'qualification_short'   => $request->qualification_short,
+                'option'                => $request->option,
+                'option_short'          => $request->option_short,
             ]);
 
             $status = 'success';
-            $message = "L'étape du parcours a bien été ajoutée.";
+            $message = "The career step has been successfully created.";
+        } catch (Exception $e) {
+            $status     = 'error';
+            $message    = "An error occurred while creating the career step.";
         }
 
-        return redirect()->route('career')->with($status, $message);
+        return redirect()->route('career.index')->with($status, $message);
     }
 
     public function editCareer(Experience $experience) : View
     {
-        $companies = Company::all();
-        return view('career.edit', compact('experience', 'companies'));
+        $companies  = Company::all();
+        $schools    = School::all();
+        return view('career.edit', compact('experience', 'companies', 'schools'));
     }
 
     public function updateCareer(Experience $experience, UpdateCareerRequest $request) : RedirectResponse
     {
-        $status = 'error';
-        $message = "Une erreur est survenue lors de la modification de l'étape du parcours.";
-
-        if ($request->image) {
-            $imageExist = Image::where('id', $request->image)->first();
-
-            if (!$imageExist) {
-                $image = app("App\Http\Controllers\WEB\ImageController")->create($request->image);
-            } else {
-                $image = $imageExist->id;
-            }
-        }
-
-        $school = School::where('id', $experience->school->id)->first();
-
-        $school->update([
-            'name'                  => $request->name,
-            'city'                  => $request->city,
-            'street'                => $request->street,
-            'zipcode'               => $request->zipcode,
-            'description'           => $request->description,
-            'url'                   => $request->url,
-            'image_id'              => $image ?? null,
-            'qualification'         => $request->qualification,
-            'qualification_short'   => $request->qualification_short,
-            'option'                => $request->option,
-            'option_short'          => $request->option_short,
-        ]);
-
-        if ($school) {
+        try {
             $experience->update([
-                'start_date'    => $request->start_date,
-                'end_date'      => $request->end_date,
-                'job_title'     => $request->job_title,
-                'development'   => isset($request->development),
-                'contract'      => (isset($request->contract) && isset($request->company)) ? 'Alternance' : null,
-                'company_id'    => (isset($request->contract) && isset($request->company)) ? $request->company : null,
+                'start_date'            => $request->start_date,
+                'end_date'              => $request->end_date,
+                'contract'              => isset($request->contract) ? 'Alternance' : null,
+                'job_title'             => $request->job_title,
+                'linked_job'            => isset($request->linked_job),
+                'company_id'            => $request->company,
+                'school_id'             => $request->school,
+                'qualification'         => $request->qualification,
+                'qualification_short'   => $request->qualification_short,
+                'option'                => $request->option,
+                'option_short'          => $request->option_short,
             ]);
 
             $status = 'success';
-            $message = "L'étape du parcours a bien été modifiée.";
+            $message = "The career step has been successfully updated.";
+        } catch (Exception $e) {
+            $status     = 'error';
+            $message    = "An error occurred while updating the career step.";
         }
 
-        return redirect()->route('career')->with($status, $message);
+        return redirect()->route('career.index')->with($status, $message);
     }
 
     public function deleteCareer(Experience $experience) : JsonResponse
     {
-        $school = $experience->school->id;
+        try {
+            $school = School::findOrfail($experience->school->id);
 
-        $experience->update([
-            'school_id' => null,
-        ]);
+            $experience->update([
+                'school_id' => null,
+            ]);
 
-        School::where('id', $school)->first()->delete();
-        $experience->delete();
+            $school->delete();
+            $experience->delete();
 
-        return response()->json([
-            'status'    => 'success',
-            'message'   => "L'étape du parcours a bien été supprimée.",
-        ]);
+            $return = Serializer::success("The career step has been successfully deleted.", [], JsonResponse::HTTP_OK);
+        } catch (Exception $e) {
+            $return = Serializer::error("An error occurred while deleting the career step.", [], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $return;
     }
 }

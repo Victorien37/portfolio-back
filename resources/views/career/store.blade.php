@@ -13,13 +13,25 @@
                         <h5 class="card-title">School</h5>
                     </div>
                     <div class="card-body">
-                        <label for="school" class="form-label"></label>
-                        <select name="school" id="school" class="form-select">
+                        <label for="school" class="form-label">School <span class="text-danger">*</span></label>
+                        <select name="school" id="school" class="form-select" required>
                             <option value="" selected disabled>Select a school</option>
                             @foreach ($schools as $school)
                                 <option value="{{ $school->id }}">{{ $school->name }}</option>
                             @endforeach
                         </select>
+
+                        <label for="qualification">Qualification <span class="text-danger">*</span></label>
+                        <input onchange="getShort('qualification')" type="text" name="qualification" id="qualification" class="form-control" required />
+
+                        <label for="qualification_short">Qualification short <span class="text-danger">*</span></label>
+                        <input type="text" name="qualification_short" id="qualification_short" class="form-control" required />
+
+                        <label for="option">Option</label>
+                        <input onchange="getShort('option')" type="text" name="option" id="option" class="form-control" />
+
+                        <label for="option_short">Option short</label>
+                        <input type="text" name="option_short" id="option_short" class="form-control" />
                     </div>
                     <div class="card-footer">
                         {{-- button modal to create school --}}
@@ -42,8 +54,8 @@
                         <label for="job_title">Job title <span class="text-danger">*</span></label>
                         <input type="text" name="job_title" id="job_title" class="form-control" required />
 
-                        <label for="development">Linked to my job</label>
-                        <input type="checkbox" name="development" id="development" class="form-check-input" />
+                        <label for="linked_job">Linked to my job</label>
+                        <input type="checkbox" name="linked_job" id="linked_job" class="form-check-input" />
 
                         <br>
                         <label for="contract">Alternance</label>
@@ -64,6 +76,7 @@
                 </div>
             </div>
         </div>
+        <br>
         <button type="submit" class="btn btn-primary">Add</button>
     </form>
 

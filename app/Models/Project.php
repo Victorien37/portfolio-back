@@ -14,9 +14,9 @@ class Project extends Model
 
     protected $guarded = [];
 
-    public function image() : HasOne
+    public function image() : BelongsTo
     {
-        return $this->hasOne(Image::class);
+        return $this->BelongsTo(Image::class);
     }
 
     public function experience() : BelongsTo

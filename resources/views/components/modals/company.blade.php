@@ -21,6 +21,9 @@
                 <label for="company-zipcode" class="form-label">Zipcode</label>
                 <input type="number" id="company-zipcode" min="0" max="99999" class="form-control" />
 
+                <label for="company-country" class="form-label">Country</label>
+                <input type="text" name="company-country" id="company-country" class="form-control" />
+
                 <label for="company-url" class="form-label">Url</label>
                 <input type="url" id="company-url" pattern="https://" placeholder="https://" class="form-control" />
 
@@ -65,6 +68,7 @@
             const city        = document.getElementById('company-city').value;
             const street      = document.getElementById('company-street').value;
             const zipcode     = document.getElementById('company-zipcode').value;
+            const country     = document.getElementById('company-country').value;
             const url         = document.getElementById('company-url').value;
             const image       = document.getElementById('company-image').value;
 
@@ -74,12 +78,13 @@
                 city:           city,
                 street:         street,
                 zipcode:        zipcode,
+                country:        country,
                 url:            url,
                 image:          image
             }).then(response => {
                 const company = response.data.data;
 
-                [name, description, city, street, zipcode, url, image].forEach(element => {
+                [name, description, city, street, zipcode, country, url, image].forEach(element => {
                     element.value = '';
                 });
 
@@ -105,7 +110,7 @@
             }).catch(error => {
                 let message = `
                     <div class="alert alert-danger alert-block">
-                        <strong>Une erreur s'est produite lors de l'ajout de l'entreprise</strong>
+                        <strong>An error has occured while creating company</strong>
                     </div>
                 `;
                 document.getElementById('message').innerHTML = message;

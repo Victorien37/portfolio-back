@@ -20,9 +20,9 @@ class Experience extends Model
         return $this->belongsTo(School::class);
     }
 
-    public function company() : HasOne
+    public function company() : BelongsTo
     {
-        return $this->hasOne(Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function project() : HasOne

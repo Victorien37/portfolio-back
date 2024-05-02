@@ -7,6 +7,7 @@ use App\Models\Image;
 use App\Models\School;
 use Illuminate\View\View;
 use App\Helpers\Serializer;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -39,6 +40,7 @@ class SchoolController extends Controller
 
         try {
             School::create([
+                'slug'          => Str::slug($request->name),
                 'city'          => $request->city,
                 'street'        => $request->street,
                 'zipcode'       => $request->zipcode,
@@ -59,7 +61,7 @@ class SchoolController extends Controller
         return redirect()->route('school.index')->with($status, $message);
     }
 
-    public function createWithAxios(StoreSchoolRequest $request) : JsonResponse
+    public function createAsync(StoreSchoolRequest $request) : JsonResponse
     {
         $imageExist = Image::where('id', $request->image_id)->first();
         if ($imageExist) {
@@ -70,6 +72,7 @@ class SchoolController extends Controller
 
         try {
             $school = School::create([
+                'slug'          => Str::slug($request->name),
                 'city'          => $request->city,
                 'street'        => $request->street,
                 'zipcode'       => $request->zipcode,
@@ -88,13 +91,15 @@ class SchoolController extends Controller
         return $return;
     }
 
-    public function edit(School $school) : View
+    public function edit(string $slug) : View
     {
+        $school = School::where('slug', $slug)->first();
         return view('school.edit', compact('school'));
     }
 
-    public function update(UpdateSchoolRequest $request, School $school) : RedirectResponse
+    public function update(UpdateSchoolRequest $request, string $slug) : RedirectResponse
     {
+        $school = School::where('slug', $slug)->first();
         $imageExist = Image::where('id', $request->image_id)->first();
         if ($imageExist) {
             $image = $imageExist->id;
@@ -105,6 +110,7 @@ class SchoolController extends Controller
 
         try {
             $school->update([
+                'slug'          => Str::slug($request->name),
                 'city'          => $request->city,
                 'street'        => $request->street,
                 'zipcode'       => $request->zipcode,
@@ -126,12 +132,16 @@ class SchoolController extends Controller
         return redirect()->route('school.index');
     }
 
-    public function delete(School $school) : JsonResponse
+    public function delete(string $slug) : JsonResponse
     {
-        $image = Image::findOrfail($school->image_id);
+        $school = School::where('slug', $slug)->first();
+        $image = Image::find($school->image_id);
 
+        $school->experiences()->delete();
         $school->delete();
-        app("App\Http\Controllers\WEB\ImageController")->delete($image);
+        if ($image) {
+            app("App\Http\Controllers\WEB\ImageController")->delete($image);
+        }
 
         return response()->json("School deleted successfully");
     }

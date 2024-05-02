@@ -82,7 +82,40 @@
                 url:            url,
                 image:          image
             }).then(response => {
+                const school = response.data.data;
 
+                [name, description, city, street, zipcode, country, url, image].forEach(element => {
+                    element.value = '';
+                });
+
+                // Add school to select
+                const schoolSelect = document.getElementById('school');
+                const option       = document.createElement('option');
+                option.value       = school.id;
+                option.text        = school.name;
+                schoolSelect.appendChild(option);
+
+                // Display message
+                let message = `
+                    <div class="alert alert-success alert-block">
+                        <strong>${response.data.message}</strong>
+                    </div>
+                `;
+                document.getElementById('message').innerHTML = message;
+
+                // Close modal
+                let myModal = bootstrap.Modal.getInstance(document.getElementById('schoolModal'));
+                myModal.hide();
+            }).catch(error => {
+                let message = `
+                    <div class="alert alert-danger alert-block">
+                        <strong>An error has occured</strong>
+                    </div>
+                `;
+                document.getElementById('message').innerHTML = message;
+
+                let myModal = bootstrap.Modal.getInstance(document.getElementById('schoolModal'));
+                myModal.hide();
             });
         }
     </script>
